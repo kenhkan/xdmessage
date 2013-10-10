@@ -40,6 +40,24 @@
     return v > 4 ? v : undef;
   }());
 
+  // popups mobile browsers don't work properly with a given width and height
+  // need a better way to do this
+  function isMobileBrowser() {
+   if( navigator.userAgent.match(/Android/i)
+     || navigator.userAgent.match(/webOS/i)
+     || navigator.userAgent.match(/iPhone/i)
+     || navigator.userAgent.match(/iPad/i)
+     || navigator.userAgent.match(/iPod/i)
+     || navigator.userAgent.match(/BlackBerry/i)
+     || navigator.userAgent.match(/Windows Phone/i)
+   ){
+      return true;
+    }
+   else {
+      return false;
+    }
+  }
+
   /*********************************
    XDPost
   *********************************/
@@ -49,9 +67,11 @@
       url = null;
     }
 
-    this.options       = options || {};
-    this.events        = {};
-    this.callbacks     = {};
+    this.options        = options || {};
+    this.events         = {};
+    this.callbacks      = {};
+    this.options.width  = this.options.width  || 720;
+    this.options.height = this.options.height || 500;
 
     this.windowHostURL = getParameterByName('opener');
     this.token         = getParameterByName('XDMessage_token');
@@ -80,17 +100,24 @@
       var url    = this.frameURL + (this.frameURL.indexOf('?') === -1 ? '?' : '&') + toParam({ opener: opener, XDMessage_token: this.token });
 
       if (this.options.popup) {
-        var width          = 600;
-        var height         = 500;
+        var width          = this.options.width;
+        var height         = this.options.height;
         var left           = parseInt((screen.availWidth/2) - (width/2));
         var top            = parseInt((screen.availHeight/2) - (height/2));
-        var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,scrollbars=1,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
+        var windowFeatures;
+
+        if (isMobileBrowser()) {
+          windowFeatures = "status,resizable,scrollbars=1";
+        } else {
+          windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,scrollbars=1,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
+        }
 
         this.popup = window.open(url, "XDMessage_popup", windowFeatures);
       } else {
         var iframe = document.createElement('iframe');
         iframe.setAttribute('frameborder', '0');
         iframe.src = url;
+        iframe.style.overflow='auto';
         iframe.onload = this._frameReady;
 
         if (this.options.target) {
@@ -263,5 +290,16 @@
     }
   };
 
-  this.XDMessage = XDMessage;
+  // Support AMD
+  if (typeof define === "function" && define.amd) {
+    define("xdmessage", [], function() {
+      return XDMessage;
+    });
+  } else {
+    if (typeof exports !== 'undefined') {
+      exports.XDMessage = XDMessage;
+    } else {
+      this.XDMessage = XDMessage;
+    }
+  }
 }).call(this);

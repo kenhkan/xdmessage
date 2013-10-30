@@ -40,6 +40,8 @@
     return v > 4 ? v : undef;
   }());
 
+  var chromeios = navigator.userAgent.match(/CriOS/);  // Chrome iOS
+
   // popups mobile browsers don't work properly with a given width and height
   // need a better way to do this
   function isMobileBrowser() {
@@ -80,6 +82,11 @@
     if (this.options.popup && ie < 10) {
       this.options.popup = false;
       this.log('Popups not supported in IE < 10');
+    }
+
+    if (this.options.popup && chromeios) {
+      this.options.popup = false;
+      this.log('Popups not supported on Chrome iOS');
     }
 
     if (!this.isChildWindow) {

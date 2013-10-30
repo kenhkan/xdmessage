@@ -302,4 +302,9 @@
       this.XDMessage = XDMessage;
     }
   }
+
+  XDMessage.noConflict = function() {
+    this.XDMessage = _previousXDMessage;
+    return this;
+  };
 }).call(this);

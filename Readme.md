@@ -4,6 +4,12 @@ PostMesssage wrapper for IFrames and Popup windows with callback support. Tries 
 
 ## Getting Started
 
+    bower install xdmessage
+
+or download `xdmessage.js` and include manually.
+
+## Usage
+
 ### Parent window code:
 
 ```HTML

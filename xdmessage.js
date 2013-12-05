@@ -91,7 +91,7 @@
 
     if (!this.isChildWindow) {
       this.frameURL     = url;
-      this.frameHostURL = this.frameURL.match(/\S+\/\/([^\/]+)\//)[0].slice(0,-1);
+      this.frameHostURL = this.frameURL.match(/\S+\/\/([^\/]+)/)[0].slice(0,-1);
     } else if (!this.windowHostURL) {
       throw 'opener parameter required';
     }

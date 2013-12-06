@@ -75,8 +75,8 @@
     this.options.width  = this.options.width  || 720;
     this.options.height = this.options.height || 500;
 
-    this.windowHostURL = getParameterByName('opener');
-    this.token         = getParameterByName('XDMessage_token');
+    this.windowHostURL = this.options.windowHostURL || getParameterByName('opener');
+    this.token         = this.options.token         || getParameterByName('XDMessage_token');
     this.isChildWindow = !url;
 
     if (this.options.popup && ie < 10) {
@@ -91,7 +91,7 @@
 
     if (!this.isChildWindow) {
       this.frameURL     = url;
-      this.frameHostURL = this.frameURL.match(/\S+\/\/([^\/]+)/)[0].slice(0,-1);
+      this.frameHostURL = this.frameURL.match(/\S+\/\/([^\/]+)/)[0];
     } else if (!this.windowHostURL) {
       throw 'opener parameter required';
     }
